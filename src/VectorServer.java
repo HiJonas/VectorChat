@@ -29,27 +29,20 @@ public class VectorServer {
 	
 	public void serverListen(ServerSocket server) throws IOException{
 
+		int counter = 0;
 		while(true){
-			Socket client = server.accept();
-			String clientAdresse;
-			clientAdresse = client.getInetAddress().getHostAddress() + client.getInetAddress().getHostName();
-			System.out.println(clientAdresse);
+			Socket socket = server.accept();
+			String clientAdress;
+			clientAdress = socket.getInetAddress().getHostAddress() + socket.getInetAddress().getHostName();
 			
-			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				
-				PrintWriter out = new PrintWriter(client.getOutputStream());
-				String currentMessage;
-				while((currentMessage = in.readLine()) != null){
-					currentMessage = "Answer: " + currentMessage;					
-					out.println(currentMessage);
-					out.flush();
-					System.out.println("Sendt: " + currentMessage);
-				}
-				
-			} catch (Exception e) {
-				
-			}
+			System.out.println("New Client " + counter + " with address " + clientAdress);
+			
+			ClientThread clientThread = new ClientThread(socket, "Client Number: "+ counter);
+			Thread thread = new Thread(clientThread);
+			thread.start();
+			
+			System.out.println("Listening to Client " + counter + " ...");
+			counter++;
 		}
 				
 	}

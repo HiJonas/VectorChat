@@ -21,7 +21,7 @@ public class VectorClient {
 
 			String currentMessage;
 			while (true) {
-				System.out.println(": ");
+				System.out.println("Write: ");
 				currentMessage = input.readLine();
 				out.println(currentMessage);
 				out.flush();
