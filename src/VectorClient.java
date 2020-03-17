@@ -20,8 +20,14 @@ public class VectorClient {
 			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
 			String currentMessage;
+			
+			System.out.println("Please enter a name:");
+			currentMessage = input.readLine();
+			out.println("/setname" + currentMessage);
+			out.flush();
+			System.out.println(reader.readLine());
+			
 			while (true) {
-				System.out.println("Write: ");
 				currentMessage = input.readLine();
 				out.println(currentMessage);
 				out.flush();
