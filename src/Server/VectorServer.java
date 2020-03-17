@@ -1,19 +1,17 @@
 package Server;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class VectorServer {
 	
-	private Map<Integer, String> clients;
-	private Map<Integer, String> clientAlias;
+	private Map<Integer, Client> clients;
 	
 	public VectorServer() {
 		System.out.println("Server starting...");
@@ -38,39 +36,27 @@ public class VectorServer {
 
 		int idCounter = 0;
 		clients = new HashMap<>();
-		clientAlias = new HashMap<>();
 		while(true){
 			Socket socket = server.accept();
 			String clientAdress;
 			clientAdress = socket.getInetAddress().getHostAddress() + socket.getInetAddress().getHostName();
 
 			System.out.println("New Client " + idCounter + " with address " + clientAdress);
-			
-			ClientThread clientThread = new ClientThread(socket, idCounter, this);
+
+			Client newClient = new Client(idCounter, ""+ idCounter, socket);
+			ClientThread clientThread = new ClientThread(newClient, this);
 			Thread thread = new Thread(clientThread);
 			thread.start();
 			
-			clients.put(idCounter, clientAdress);
+			clients.put(newClient.getId(), newClient);
 			System.out.println("Listening to Client " + idCounter + " ...");
 			idCounter++;
 		}
 				
 	}
 
-	public Set<Integer> getClients() {
-		return clients.keySet();
-	}
-
-	public void setAlias(Integer id, String alias) {
-		clientAlias.put(id, alias);
-		
-	}
-
-	public String getAlias(Integer id) {
-		if(clientAlias.get(id) == null) {
-			return ""+id;
-		}
-		return clientAlias.get(id);
+	public List<String> getClients() {
+		return clients.values().stream().map(c -> c.getName()).collect(Collectors.toList());
 	}
 
 }
