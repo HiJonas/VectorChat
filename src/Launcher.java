@@ -1,5 +1,8 @@
 import java.util.Scanner;
 
+import Client.VectorClient;
+import Server.VectorServer;
+
 public class Launcher {
 
 	public static void main(String[] args) {
