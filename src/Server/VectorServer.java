@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class VectorServer {
 		while(true){
 			Socket socket = server.accept();
 			String clientAdress;
-			clientAdress = socket.getInetAddress().getHostAddress() + socket.getInetAddress().getHostName();
+			clientAdress = socket.getInetAddress().getHostAddress();
 
 			System.out.println("New Client " + idCounter + " with address " + clientAdress);
 
@@ -57,6 +58,13 @@ public class VectorServer {
 
 	public List<String> getClients() {
 		return clients.values().stream().map(c -> c.getName()).collect(Collectors.toList());
+	}
+
+	public Optional<Client> getClientAddress(String userToAdd) {
+		return clients.values().stream()
+				.filter(c -> c.getName().equals(userToAdd))
+				.findFirst();
+		
 	}
 
 }

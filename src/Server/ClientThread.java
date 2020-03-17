@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ClientThread implements Runnable {
@@ -34,7 +35,7 @@ public class ClientThread implements Runnable {
 				if(currentMessage.startsWith("/setname")) {
 					String newName = currentMessage.substring(8);
 					if(server.getClients().contains(newName)) {
-						newMessage = "Name " + client.getName() +" already exists";
+						newMessage = "Name " + newName +" already exists";
 					}else {
 						client.setName(newName);	
 						newMessage = "Your Name has been set to " + client.getName();
@@ -51,6 +52,19 @@ public class ClientThread implements Runnable {
 					newMessage = messageBuilder.toString();
 					
 				}
+				else if(currentMessage.startsWith("/add")) {
+					String userToAdd = currentMessage.substring(4).replace(" ", "");
+					Optional<Client> clientToAdd = server.getClientAddress(userToAdd);
+					if(clientToAdd.isPresent()) {
+						newMessage = clientToAdd.get().getAddress();
+					}else {
+						newMessage = "No user with name "+ userToAdd;
+					}
+					
+					
+				}
+				
+				
 				out.println(newMessage);
 				out.flush();
 			}
