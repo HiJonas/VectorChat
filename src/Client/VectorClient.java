@@ -26,6 +26,8 @@ public class VectorClient {
 
 		try {
 			BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in));
+			
+			//Eingabe der Serveradresse
 			System.out.println("Enter Server Address: ");
 			String serverAddress = consoleInput.readLine();
 			
@@ -40,6 +42,7 @@ public class VectorClient {
 			System.out.println("Connecting to Server...");
 			System.out.println("Your ID is "+ id);
 			
+			//Aufforderung Name einzugeben, solange bis valide
 			boolean nameSet = false;
 			while(!nameSet) {
 				System.out.println("Please enter a name:");
@@ -48,24 +51,30 @@ public class VectorClient {
 				serverOut.flush();
 				String response = reader.readLine();
 				System.out.println(response);
+				//Response fängt mit Your an sofern Name valide war
 				if(response.startsWith("Your")){
 					nameSet = true;
 					this.myName = currentMessage;
 				}
 			}
 			
+			//Thread starten um auf neue Peer Sockets zu hören
 			NewPeerListener peerListener = new NewPeerListener(this);
 			Thread thread = new Thread(peerListener);
 			thread.run();
 			
+			//Benutzereingaben entgegennehmen
 			while (true) {
 				currentMessage = consoleInput.readLine();
 				if(currentMessage.contains("#")){
+					// Zeichen # reserviert für Metainformationen wie VectorClock
 					System.out.println("Invalid Message");
 					continue;
 				}else if(currentMessage.startsWith("/")) {
+					//Alle Eingaben mit / gehen an Server
 					handleServerRequest(server, reader, currentMessage);	
 				}else if(currentMessage.contains(":")){
+					//Nachricht an Peer mit name: Nachricht
 					String user = currentMessage.split(":")[0];
 					currentMessage = currentMessage.substring(user.length()+1);				
 					if(peers.containsKey(user)) {
@@ -87,18 +96,23 @@ public class VectorClient {
 	private void handleServerRequest(Socket server, BufferedReader reader, String currentMessage)
 			throws IOException, UnknownHostException {
 		if(currentMessage.startsWith("/add")) {
+			//Falls request an Server mit /add angefangen hat
+			
 			if(currentMessage.substring(5).equals(myName)) {
 				System.out.println("You can't add yourself");
-			}else if(peers.containsKey(currentMessage.substring(5))) {
+			}else if(peers.containsKey(currentMessage.substring(5))) {				
 				System.out.println("User already in your contacts");
 			}else {
 				serverOut.println(currentMessage);
 				serverOut.flush();
-				String response = reader.readLine();			
+				String response = reader.readLine();	
+				
+				//Falls response mit No anfängt gab es einen Fehler, ansonsten ist response Adresse
 				if(response.startsWith("No")) {
+					//Falls response mit No anfängt invalider Name
 					System.out.println(response);							
 				}else {
-					addNewPeer(server, currentMessage, response);
+					addNewPeer(currentMessage, response);
 				}
 				
 			}			
@@ -110,22 +124,25 @@ public class VectorClient {
 		}
 	}
 
-	private void addNewPeer(Socket server, String currentMessage, String response)
+	//Eröffnet Socket zu Peer und schickt eigenen Namen
+	private void addNewPeer(String currentMessage, String address)
 			throws UnknownHostException, IOException {
 		String name = currentMessage.substring(5);	
 		
-		Socket newSocket = new Socket(response, 55554);
+		Socket newSocket = new Socket(address, 55554);
 		PrintWriter peerOut =  new PrintWriter(newSocket.getOutputStream());
 		peerOut.println(myName);
 		peerOut.flush();
 		peers.put(name, newSocket);
 		
-		System.out.println(name + " has been added to your contacts");							
+		System.out.println(name + " has been added to contacts");							
 	}
 
+	//Fügt einen neuen Peer zur Kontaktliste hinzu
 	public void socketOpened(String name, Socket socket) {
 		peers.put(name, socket);
 		System.out.println(name + " opened a connection");
+		System.out.println(name + " has been added to contacts");
 			
 	}
 

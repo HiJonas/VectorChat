@@ -35,8 +35,12 @@ public class VectorServer {
 	
 	public void serverListen(ServerSocket server) throws IOException{
 
+		//Laufende ID für CLienten
 		int idCounter = 0;
+		
 		clients = new HashMap<>();
+		
+		//Hört auf neue Clienten
 		while(true){
 			Socket socket = server.accept();
 			String clientAdress;
@@ -44,6 +48,7 @@ public class VectorServer {
 
 			System.out.println("New Client " + idCounter + " with address " + clientAdress);
 
+			//Erzeugt Clienten Objekt und ClientThread um auf eingehende Nachrichten zu lauschen
 			Client newClient = new Client(idCounter, ""+ idCounter, socket);
 			ClientThread clientThread = new ClientThread(newClient, this);
 			Thread thread = new Thread(clientThread);
@@ -56,10 +61,12 @@ public class VectorServer {
 				
 	}
 
+	//Gibt Liste an registrierten Clienten Namen zurück
 	public List<String> getClients() {
 		return clients.values().stream().map(c -> c.getName()).collect(Collectors.toList());
 	}
 
+	//Gibt Optional die Adresse eines Clients zurück
 	public Optional<Client> getClientAddress(String userToAdd) {
 		return clients.values().stream()
 				.filter(c -> c.getName().equals(userToAdd))

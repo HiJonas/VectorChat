@@ -18,6 +18,7 @@ public class ClientThread implements Runnable {
 		
 	}
 
+	//Hört auf Nachrichten vom Clienten
 	@Override
 	public void run() {
 		try {
@@ -32,7 +33,10 @@ public class ClientThread implements Runnable {
 			
 			while((currentMessage = in.readLine()) != null){
 				newMessage = currentMessage;
+				
+				
 				if(currentMessage.startsWith("/setname")) {
+					//Falls Nachricht mit /setname beginnt soll der Name des Clienten gesetzt werden
 					String newName = currentMessage.substring(8);
 					if(server.getClients().contains(newName)) {
 						newMessage = "Name " + newName +" already exists";
@@ -43,6 +47,7 @@ public class ClientThread implements Runnable {
 					
 				}
 				else if(currentMessage.startsWith("/clients")) {
+					//Falls Nachricht mit /clients beginnt sollen alle Clientennamen zurückgegeben werden
 					StringBuilder messageBuilder = new StringBuilder();
 					messageBuilder.append("Active Clients: ");
 					List<String> clients  = server.getClients();			
@@ -53,6 +58,7 @@ public class ClientThread implements Runnable {
 					
 				}
 				else if(currentMessage.startsWith("/add")) {
+					//Falls Nachricht mit /add beginnt soll Adresse des angegebenen Clienten zurückgegeben werden
 					String userToAdd = currentMessage.substring(4).replace(" ", "");
 					Optional<Client> clientToAdd = server.getClientAddress(userToAdd);
 					if(clientToAdd.isPresent()) {
@@ -64,7 +70,7 @@ public class ClientThread implements Runnable {
 					
 				}
 				
-				
+				//Schreibt Nachrit raus
 				out.println(newMessage);
 				out.flush();
 			}

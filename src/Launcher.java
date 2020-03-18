@@ -5,6 +5,7 @@ import Server.VectorServer;
 
 public class Launcher {
 
+	//Auswahl ob Server oder Client gestartet wird
 	public static void main(String[] args) {
 		System.out.println("VectorChat");
 		System.out.println("1. Start Client");
