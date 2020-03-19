@@ -32,9 +32,7 @@ public class ClientThread implements Runnable {
 			
 			
 			while((currentMessage = in.readLine()) != null){
-				newMessage = currentMessage;
-				
-				
+				newMessage = currentMessage;								
 				if(currentMessage.startsWith("/setname")) {
 					//Falls Nachricht mit /setname beginnt soll der Name des Clienten gesetzt werden
 					String newName = currentMessage.substring(8);

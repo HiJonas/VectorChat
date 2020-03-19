@@ -8,12 +8,15 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
+import VectorClock.VectorClock;
+
 public class VectorClient {
 	private static final int PORT = 5555;
 	private int id;
 	PrintWriter serverOut;
 	Map<String, Socket> peers;
 	private String myName;
+	private VectorClock clock;
 	
 	public VectorClient() {
 		System.out.println("Client starting...");
@@ -58,11 +61,13 @@ public class VectorClient {
 				}
 			}
 			
+			clock = new VectorClock(id);
+			
 			//Thread starten um auf neue Peer Sockets zu hören
 			NewPeerListener peerListener = new NewPeerListener(this);
 			Thread thread = new Thread(peerListener);
-			thread.run();
-			
+			thread.start();
+
 			//Benutzereingaben entgegennehmen
 			while (true) {
 				currentMessage = consoleInput.readLine();
@@ -73,13 +78,19 @@ public class VectorClient {
 				}else if(currentMessage.startsWith("/")) {
 					//Alle Eingaben mit / gehen an Server
 					handleServerRequest(server, reader, currentMessage);	
+				}else if(currentMessage.startsWith(".")) {
+					//Alle Eingaben mit . geben eigene Informationen aus
+					if(currentMessage.startsWith(".clock")) {
+						System.out.println("Current clock: " + clock.getString());
+					} 
 				}else if(currentMessage.contains(":")){
 					//Nachricht an Peer mit name: Nachricht
 					String user = currentMessage.split(":")[0];
 					currentMessage = currentMessage.substring(user.length()+1);				
 					if(peers.containsKey(user)) {
+						clock.sendMessage();
 						PrintWriter peerOut =  new PrintWriter(peers.get(user).getOutputStream());
-						peerOut.println(currentMessage);
+						peerOut.println(clock.getString() + "#" + currentMessage);
 						peerOut.flush();
 					}else {
 						System.out.println(user + " is not in contacts");
@@ -144,6 +155,10 @@ public class VectorClient {
 		System.out.println(name + " opened a connection");
 		System.out.println(name + " has been added to contacts");
 			
+	}
+
+	public VectorClock getClock() {
+		return clock;
 	}
 
 }

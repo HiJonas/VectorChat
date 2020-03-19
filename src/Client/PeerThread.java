@@ -10,15 +10,18 @@ import java.util.Set;
 
 import Server.Client;
 import Server.VectorServer;
+import VectorClock.VectorClock;
 
 public class PeerThread implements Runnable {
 	
 	private BufferedReader peer;
 	private String name;
+	private VectorClock clock;
 	
-	public PeerThread(BufferedReader peerIn, String name) {
+	public PeerThread(BufferedReader peerIn, String name, VectorClock clock) {
 		this.peer = peerIn;
 		this.name = name;
+		this.clock = clock;
 		
 	}
 
@@ -29,7 +32,10 @@ public class PeerThread implements Runnable {
 			String currentMessage;
 			try {
 				while((currentMessage = peer.readLine()) != null) {
-					System.out.println("From "+ name + ": " +currentMessage);
+					String receivedClock = currentMessage.split("#")[0];
+					clock.receivedMessage(receivedClock);
+					String message = currentMessage.split("#")[1];
+					System.out.println("From "+ name + ": " +message);
 			
 				}
 			} catch (IOException e) {

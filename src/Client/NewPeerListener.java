@@ -30,7 +30,6 @@ public class NewPeerListener implements Runnable {
 		try {
 			ServerSocket server = new ServerSocket(55554);		
 			InetAddress adresse = InetAddress.getLocalHost();
-
 			while(true){
 				Socket socket = server.accept();
 				String clientAdress;
@@ -40,7 +39,7 @@ public class NewPeerListener implements Runnable {
 				//Hinzufügen des neuen Peers zur Kontaktliste
 				vectorClient.socketOpened(name, socket);
 				
-				PeerThread peerThread = new PeerThread(reader, name);
+				PeerThread peerThread = new PeerThread(reader, name, vectorClient.getClock());
 				Thread thread = new Thread(peerThread);
 				thread.start();
 			}
