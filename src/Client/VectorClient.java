@@ -53,7 +53,7 @@ public class VectorClient {
 			diary = new MessageDiary();
 			clock = new VectorClock(id);
 			
-			//Thread starten um auf neue Peer Sockets zu hören
+			//Thread starten um auf neue Peer Sockets zu hoeren
 			NewPeerListener peerListener = new NewPeerListener(this);
 			Thread thread = new Thread(peerListener);
 			thread.start();
@@ -62,7 +62,7 @@ public class VectorClient {
 			while (true) {
 				currentMessage = consoleInput.readLine();
 				if(currentMessage.contains("#")){
-					// Zeichen # reserviert für Metainformationen wie VectorClock
+					// Zeichen # reserviert fuer Metainformationen wie VectorClock
 					System.out.println("Invalid Message");
 					continue;
 				}else if(currentMessage.startsWith("/")) {
@@ -102,7 +102,7 @@ public class VectorClient {
 			serverOut.flush();
 			String response = reader.readLine();
 			System.out.println(response);
-			//Response fängt mit Your an sofern Name valide war
+			//Response faengt mit Your an sofern Name valide war
 			if(response.startsWith("Your")){
 				nameSet = true;
 				this.myName = currentMessage;
@@ -132,9 +132,9 @@ public class VectorClient {
 				serverOut.flush();
 				String response = reader.readLine();	
 				
-				//Falls response mit No anfängt gab es einen Fehler, ansonsten ist response Adresse
+				//Falls response mit No anfaengt gab es einen Fehler, ansonsten ist response Adresse
 				if(response.startsWith("No")) {
-					//Falls response mit No anfängt invalider Name
+					//Falls response mit No anfaengt invalider Name
 					System.out.println(response);							
 				}else {
 					addNewPeer(currentMessage, response);
@@ -149,7 +149,7 @@ public class VectorClient {
 		}
 	}
 
-	//Eröffnet Socket zu Peer und schickt eigenen Namen
+	//Eroeffnet Socket zu Peer und schickt eigenen Namen
 	private void addNewPeer(String currentMessage, String address)
 			throws UnknownHostException, IOException {
 		String name = currentMessage.substring(5);	
@@ -163,7 +163,7 @@ public class VectorClient {
 		System.out.println(name + " has been added to contacts");							
 	}
 
-	//Fügt einen neuen Peer zur Kontaktliste hinzu
+	//Fuegt einen neuen Peer zur Kontaktliste hinzu
 	public void socketOpened(String name, Socket socket) {
 		peers.put(name, socket);
 		System.out.println(name + " opened a connection");

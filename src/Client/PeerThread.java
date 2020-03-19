@@ -25,7 +25,7 @@ public class PeerThread implements Runnable {
 		this.client = client;
 	}
 
-	//Dieser Thread empfängt Nachrichten von einem bestimmten Peer
+	//Dieser Thread empfaengt Nachrichten von einem bestimmten Peer
 	@Override
 	public void run() {
 

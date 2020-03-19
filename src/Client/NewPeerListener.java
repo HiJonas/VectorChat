@@ -24,7 +24,7 @@ public class NewPeerListener implements Runnable {
 
 	}
 	
-	//Dieser Thread hört auf neue Socket Verbindungen und eröffnet einen nueen PeerThread
+	//Dieser Thread hoert auf neue Socket Verbindungen und eroeffnet einen nueen PeerThread
 	@Override
 	public void run() {
 		try {
@@ -36,7 +36,7 @@ public class NewPeerListener implements Runnable {
 				clientAdress = socket.getInetAddress().getHostAddress();
 				BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				String name = reader.readLine();
-				//Hinzufügen des neuen Peers zur Kontaktliste
+				//Hinzufuegen des neuen Peers zur Kontaktliste
 				vectorClient.socketOpened(name, socket);
 				
 				PeerThread peerThread = new PeerThread(reader, name, vectorClient);

@@ -23,7 +23,7 @@ public class VectorClock {
         vectorClock.set(id, vectorClock.get(id)+1);
         String newClock[] = newClockString.split(SEPARATOR);
         if(newClock.length > vectorClock.size()) {
-        	//Empfangene Clock ist länger als eigene also werdn zusätzliche übernommen
+        	//Empfangene Clock ist laenger als eigene also werdn zusaetzliche uebernommen
         	for (int i = 0; i < vectorClock.size(); i++) {
                 vectorClock.set(i, Math.max(vectorClock.get(id), Integer.parseInt(newClock[i])));
             }

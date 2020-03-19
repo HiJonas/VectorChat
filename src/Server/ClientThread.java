@@ -18,7 +18,7 @@ public class ClientThread implements Runnable {
 		
 	}
 
-	//Hört auf Nachrichten vom Clienten
+	//Hoert auf Nachrichten vom Clienten
 	@Override
 	public void run() {
 		try {
@@ -45,7 +45,7 @@ public class ClientThread implements Runnable {
 					
 				}
 				else if(currentMessage.startsWith("/clients")) {
-					//Falls Nachricht mit /clients beginnt sollen alle Clientennamen zurückgegeben werden
+					//Falls Nachricht mit /clients beginnt sollen alle Clientennamen zurueckgegeben werden
 					StringBuilder messageBuilder = new StringBuilder();
 					messageBuilder.append("Active Clients: ");
 					List<String> clients  = server.getClients();			
@@ -56,7 +56,7 @@ public class ClientThread implements Runnable {
 					
 				}
 				else if(currentMessage.startsWith("/add")) {
-					//Falls Nachricht mit /add beginnt soll Adresse des angegebenen Clienten zurückgegeben werden
+					//Falls Nachricht mit /add beginnt soll Adresse des angegebenen Clienten zurueckgegeben werden
 					String userToAdd = currentMessage.substring(4).replace(" ", "");
 					Optional<Client> clientToAdd = server.getClientAddress(userToAdd);
 					if(clientToAdd.isPresent()) {

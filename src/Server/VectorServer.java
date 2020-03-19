@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class VectorServer {
 	
 	private Map<Integer, Client> clients;
-	
+
 	public VectorServer() {
 		System.out.println("Server starting...");
 		startServerSocket();
@@ -25,6 +25,9 @@ public class VectorServer {
 			InetAddress adresse = InetAddress.getLocalHost();
 			System.out.println("Server started");
 			System.out.println("Running at:  " +  adresse.getHostAddress());
+
+			ServerThread thread = new ServerThread();
+			thread.start();
 			
 			serverListen(server);	
 		} catch (Exception e) {
@@ -35,12 +38,12 @@ public class VectorServer {
 	
 	public void serverListen(ServerSocket server) throws IOException{
 
-		//Laufende ID für CLienten
+		//Laufende ID fuer CLienten
 		int idCounter = 0;
 		
 		clients = new HashMap<>();
 		
-		//Hört auf neue Clienten
+		//Hoert auf neue Clienten
 		while(true){
 			Socket socket = server.accept();
 			String clientAdress;
@@ -56,17 +59,17 @@ public class VectorServer {
 			
 			clients.put(newClient.getId(), newClient);
 			System.out.println("Listening to Client " + idCounter + " ...");
-			idCounter++;
+			idCounter++;			
 		}
 				
 	}
 
-	//Gibt Liste an registrierten Clienten Namen zurück
+	//Gibt Liste an registrierten Clienten Namen zurueck
 	public List<String> getClients() {
 		return clients.values().stream().map(c -> c.getName()).collect(Collectors.toList());
 	}
 
-	//Gibt Optional die Adresse eines Clients zurück
+	//Gibt Optional die Adresse eines Clients zurueck
 	public Optional<Client> getClientAddress(String userToAdd) {
 		return clients.values().stream()
 				.filter(c -> c.getName().equals(userToAdd))
