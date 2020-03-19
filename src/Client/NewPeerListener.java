@@ -39,7 +39,7 @@ public class NewPeerListener implements Runnable {
 				//Hinzufügen des neuen Peers zur Kontaktliste
 				vectorClient.socketOpened(name, socket);
 				
-				PeerThread peerThread = new PeerThread(reader, name, vectorClient.getClock());
+				PeerThread peerThread = new PeerThread(reader, name, vectorClient);
 				Thread thread = new Thread(peerThread);
 				thread.start();
 			}

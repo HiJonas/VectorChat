@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
-import VectorClock.VectorClock;
+import Models.VectorClock;
 
 public class VectorClient {
 	private static final int PORT = 5555;
@@ -17,6 +17,7 @@ public class VectorClient {
 	Map<String, Socket> peers;
 	private String myName;
 	private VectorClock clock;
+	private MessageDiary diary;
 	
 	public VectorClient() {
 		System.out.println("Client starting...");
@@ -46,21 +47,10 @@ public class VectorClient {
 			System.out.println("Your ID is "+ id);
 			
 			//Aufforderung Name einzugeben, solange bis valide
-			boolean nameSet = false;
-			while(!nameSet) {
-				System.out.println("Please enter a name:");
-				currentMessage = consoleInput.readLine();
-				serverOut.println("/setname" + currentMessage);
-				serverOut.flush();
-				String response = reader.readLine();
-				System.out.println(response);
-				//Response fängt mit Your an sofern Name valide war
-				if(response.startsWith("Your")){
-					nameSet = true;
-					this.myName = currentMessage;
-				}
-			}
+			initialNaming(consoleInput, reader);
 			
+			//Initialisierungen
+			diary = new MessageDiary();
 			clock = new VectorClock(id);
 			
 			//Thread starten um auf neue Peer Sockets zu hören
@@ -80,9 +70,7 @@ public class VectorClient {
 					handleServerRequest(server, reader, currentMessage);	
 				}else if(currentMessage.startsWith(".")) {
 					//Alle Eingaben mit . geben eigene Informationen aus
-					if(currentMessage.startsWith(".clock")) {
-						System.out.println("Current clock: " + clock.getString());
-					} 
+					handleLocalRequests(currentMessage);
 				}else if(currentMessage.contains(":")){
 					//Nachricht an Peer mit name: Nachricht
 					String user = currentMessage.split(":")[0];
@@ -90,7 +78,7 @@ public class VectorClient {
 					if(peers.containsKey(user)) {
 						clock.sendMessage();
 						PrintWriter peerOut =  new PrintWriter(peers.get(user).getOutputStream());
-						peerOut.println(clock.getString() + "#" + currentMessage);
+						peerOut.println(clock.getClockString() + "#" + currentMessage);
 						peerOut.flush();
 					}else {
 						System.out.println(user + " is not in contacts");
@@ -102,6 +90,32 @@ public class VectorClient {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void initialNaming(BufferedReader consoleInput, BufferedReader reader) throws IOException {
+		String currentMessage;
+		boolean nameSet = false;
+		while(!nameSet) {
+			System.out.println("Please enter a name:");
+			currentMessage = consoleInput.readLine();
+			serverOut.println("/setname" + currentMessage);
+			serverOut.flush();
+			String response = reader.readLine();
+			System.out.println(response);
+			//Response fängt mit Your an sofern Name valide war
+			if(response.startsWith("Your")){
+				nameSet = true;
+				this.myName = currentMessage;
+			}
+		}
+	}
+
+	private void handleLocalRequests(String currentMessage) {
+		if(currentMessage.startsWith(".clock")) {
+			System.out.println("Current clock: " + clock.getClockString());
+		}else if(currentMessage.startsWith(".diary")) {
+			System.out.println("Current Message Diary: " + diary.getDiaryString());
+		}
 	}
 
 	private void handleServerRequest(Socket server, BufferedReader reader, String currentMessage)
@@ -159,6 +173,14 @@ public class VectorClient {
 
 	public VectorClock getClock() {
 		return clock;
+	}
+
+	public String getName() {
+		return myName;
+	}
+
+	public MessageDiary getMessageDiary() {
+		return diary;
 	}
 
 }

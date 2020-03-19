@@ -1,4 +1,4 @@
-package VectorClock;
+package Models;
 
 import java.util.ArrayList;
 
@@ -38,7 +38,7 @@ public class VectorClock {
                 
     }
     
-    public String getString() {
+    public String getClockString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append(vectorClock.get(0));
         for (int i = 1; i < vectorClock.size(); i++) {

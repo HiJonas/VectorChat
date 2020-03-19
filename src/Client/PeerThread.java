@@ -8,21 +8,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import Models.Message;
+import Models.VectorClock;
 import Server.Client;
 import Server.VectorServer;
-import VectorClock.VectorClock;
 
 public class PeerThread implements Runnable {
 	
-	private BufferedReader peer;
-	private String name;
-	private VectorClock clock;
+	private BufferedReader peerReader;
+	private String peerName;
+	private VectorClient client;
 	
-	public PeerThread(BufferedReader peerIn, String name, VectorClock clock) {
-		this.peer = peerIn;
-		this.name = name;
-		this.clock = clock;
-		
+	public PeerThread(BufferedReader peerIn, String name, VectorClient client) {
+		this.peerReader = peerIn;
+		this.peerName = name;
+		this.client = client;
 	}
 
 	//Dieser Thread empfängt Nachrichten von einem bestimmten Peer
@@ -31,11 +31,15 @@ public class PeerThread implements Runnable {
 
 			String currentMessage;
 			try {
-				while((currentMessage = peer.readLine()) != null) {
+				while((currentMessage = peerReader.readLine()) != null) {
 					String receivedClock = currentMessage.split("#")[0];
-					clock.receivedMessage(receivedClock);
-					String message = currentMessage.split("#")[1];
-					System.out.println("From "+ name + ": " +message);
+					client.getClock().receivedMessage(receivedClock);
+					String messageString = currentMessage.split("#")[1];
+					
+					Message newMessage = new Message(peerName, client.getName(), client.getClock().getClockString(), messageString);
+					client.getMessageDiary().addMessage(newMessage);
+					
+					System.out.println("From "+ peerName + ": " +messageString);
 			
 				}
 			} catch (IOException e) {
