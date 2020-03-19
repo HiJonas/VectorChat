@@ -9,7 +9,6 @@ public class ServerThread extends Thread {
 
     public void run(){
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("DU da?");
         try {
 		    if (in.readLine().startsWith("/log")) {
 			    System.out.println("naaa");
@@ -18,6 +17,5 @@ public class ServerThread extends Thread {
 		} catch (InterruptedException | IOException e) {
             //
         }
-        System.out.println("ciao");
     }
 }
