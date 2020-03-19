@@ -26,7 +26,7 @@ public class VectorServer {
 			System.out.println("Server started");
 			System.out.println("Running at:  " +  adresse.getHostAddress());
 
-			ServerThread thread = new ServerThread();
+			ServerThread thread = new ServerThread(this);
 			thread.start();
 			
 			serverListen(server);	
@@ -67,6 +67,10 @@ public class VectorServer {
 	//Gibt Liste an registrierten Clienten Namen zurueck
 	public List<String> getClients() {
 		return clients.values().stream().map(c -> c.getName()).collect(Collectors.toList());
+	}
+
+	public Map<Integer, Client> getClientList() {
+		return clients;
 	}
 
 	//Gibt Optional die Adresse eines Clients zurueck
