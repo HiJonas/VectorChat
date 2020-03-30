@@ -24,6 +24,7 @@ public class ClientThread implements Runnable {
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()));			
 			PrintWriter out = new PrintWriter(client.getSocket().getOutputStream());
+			client.setPrintWriter(out);
 			String currentMessage;
 			String newMessage;
 			
@@ -41,10 +42,11 @@ public class ClientThread implements Runnable {
 					}else {
 						client.setName(newName);	
 						newMessage = client.getName()+"#Your Name has been set to " + client.getName();
-					}
+					}		
 					
-				}
-				else if(currentMessage.startsWith("/clients")) {
+					out.println(newMessage);
+					out.flush();
+				}else if(currentMessage.startsWith("/clients")) {
 					//Falls Nachricht mit /clients beginnt sollen alle Clientennamen zurueckgegeben werden
 					StringBuilder messageBuilder = new StringBuilder();
 					messageBuilder.append("CLIENTS#Active Clients:");
@@ -53,10 +55,11 @@ public class ClientThread implements Runnable {
 						messageBuilder.append(" " + currentClient);
 					}
 					newMessage = messageBuilder.toString();
+
+					out.println(newMessage);
+					out.flush();
 					
-				}
-				else if(currentMessage.startsWith("/add")) {
-					System.out.println(currentMessage);
+				}else if(currentMessage.startsWith("/add")) {
 					//Falls Nachricht mit /add beginnt soll Adresse des angegebenen Clienten zurueckgegeben werden
 					String userToAdd = currentMessage.substring(4).replace(" ", "");
 					Optional<Client> clientToAdd = server.getClientAddress(userToAdd);
@@ -64,14 +67,17 @@ public class ClientThread implements Runnable {
 						newMessage = "ADD#"+clientToAdd.get().getAddress()+" "+userToAdd;
 					}else {
 						newMessage = "ERROR#No user with name "+ userToAdd;
+					}			
+
+					out.println(newMessage);
+					out.flush();
+				}else if(currentMessage.startsWith("LOG#")) {
+					String diaryString[] = currentMessage.split("#");
+					//0 is LOG and should be ignored
+					for(String currentString: diaryString) {
+						System.out.println(currentString);
 					}
-					
-					
 				}
-				
-				//Schreibt Nachrit raus
-				out.println(newMessage);
-				out.flush();
 			}
 			
 		} catch (Exception e) {

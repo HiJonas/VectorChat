@@ -26,7 +26,8 @@ public class VectorServer {
 			System.out.println("Server started");
 			System.out.println("Running at:  " +  adresse.getHostAddress());
 
-			ServerConsoleThread thread = new ServerConsoleThread(this);
+			ServerConsoleThread serverConsoleThread = new ServerConsoleThread(this);
+			Thread thread = new Thread(serverConsoleThread);
 			thread.start();
 			
 			serverListen(server);	

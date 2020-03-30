@@ -181,4 +181,10 @@ public class VectorClient {
 		return diary;
 	}
 
+	public void sendLogToServer() {
+		serverOut.println("LOG#"+diary.getDiaryString());
+		serverOut.flush();
+		System.out.println("Log has been sent to Server");
+	}
+
 }

@@ -33,9 +33,9 @@ public class MessageDiary {
 	}
 
 	private void buildString(StringBuilder sb, Message message) {
-		sb.append("From "+ message.getFrom());
-		sb.append(" To "+ message.getTo());
-		sb.append(" At "+ message.getClock());
+		sb.append("FROM "+ message.getFrom());
+		sb.append(" TO "+ message.getTo());
+		sb.append(" AT "+ message.getClock());
 		sb.append(": "+ message.getMessage());
 		
 	}

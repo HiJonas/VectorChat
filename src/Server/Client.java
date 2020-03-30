@@ -1,5 +1,6 @@
 package Server;
 
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
@@ -8,6 +9,7 @@ public class Client {
 	private String name;
 	private String address;
 	private Socket socket;
+	private PrintWriter printWriter;
 
 	public Client(int id, String name, Socket socket) {
 		this.id = id;
@@ -34,6 +36,14 @@ public class Client {
 
 	public Socket getSocket() {
 		return socket;
+	}
+
+	public PrintWriter getPrintWriter() {
+		return printWriter;
+	}
+
+	public void setPrintWriter(PrintWriter out) {
+		this.printWriter = out;
 	}
 }
 

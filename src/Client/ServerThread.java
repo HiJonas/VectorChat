@@ -30,7 +30,6 @@ public class ServerThread implements Runnable {
 			String currentMessage;
 			try {
 				while((currentMessage = serverIn.readLine()) != null) {
-
 					String currentMessageHeader = currentMessage.split("#")[0];
 					currentMessage = currentMessage.split("#")[1];
 					 if(currentMessageHeader.contains("ADD")) {
@@ -39,11 +38,12 @@ public class ServerThread implements Runnable {
 						vectorClient.addNewPeer(name, address);					
 					}else if(currentMessageHeader.contains("ERROR")) {
 						System.out.println("From Server: "+ currentMessage);
+					}else if(currentMessageHeader.contains("LOG")) {
+						System.out.println("Server is requesting Log...");
+						vectorClient.sendLogToServer();
 					}else {
 						System.out.println("From Server: "+ currentMessage);
-					}
-					
-			
+					}						
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
