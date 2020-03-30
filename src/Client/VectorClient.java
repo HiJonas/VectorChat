@@ -53,6 +53,11 @@ public class VectorClient {
 			diary = new MessageDiary();
 			clock = new VectorClock(id);
 			
+			//Thread starten um auf Server zu hören
+			ServerThread serverThread = new ServerThread(reader, this);
+			Thread t = new Thread(serverThread);
+			t.start();
+			
 			//Thread starten um auf neue Peer Sockets zu hoeren
 			NewPeerListener peerListener = new NewPeerListener(this);
 			Thread thread = new Thread(peerListener);
@@ -101,11 +106,13 @@ public class VectorClient {
 			serverOut.println("/setname" + currentMessage);
 			serverOut.flush();
 			String response = reader.readLine();
+			String responseMeta = response.split("#")[0];
+			response = response.split("#")[1];
 			System.out.println(response);
 			//Response faengt mit Your an sofern Name valide war
-			if(response.startsWith("Your")){
+			if(!responseMeta.startsWith("ERROR")){
 				nameSet = true;
-				this.myName = currentMessage;
+				this.myName = responseMeta;
 			}
 		}
 	}
@@ -121,46 +128,37 @@ public class VectorClient {
 	private void handleServerRequest(Socket server, BufferedReader reader, String currentMessage)
 			throws IOException, UnknownHostException {
 		if(currentMessage.startsWith("/add")) {
-			//Falls request an Server mit /add angefangen hat
-			
+			//Falls request an Server mit /add angefangen hat			
 			if(currentMessage.substring(5).equals(myName)) {
 				System.out.println("You can't add yourself");
 			}else if(peers.containsKey(currentMessage.substring(5))) {				
 				System.out.println("User already in your contacts");
 			}else {
 				serverOut.println(currentMessage);
-				serverOut.flush();
-				String response = reader.readLine();	
-				
-				//Falls response mit No anfaengt gab es einen Fehler, ansonsten ist response Adresse
-				if(response.startsWith("No")) {
-					//Falls response mit No anfaengt invalider Name
-					System.out.println(response);							
-				}else {
-					addNewPeer(currentMessage, response);
-				}
-				
+				serverOut.flush();				
 			}			
+		}else if(currentMessage.startsWith("/setname")){
+			System.out.println("You can't change your name");
 		}else {
 			serverOut.println(currentMessage);
-			serverOut.flush();
-			String response = reader.readLine();
-			System.out.println(response);
+			serverOut.flush();		
 		}
 	}
 
 	//Eroeffnet Socket zu Peer und schickt eigenen Namen
-	private void addNewPeer(String currentMessage, String address)
-			throws UnknownHostException, IOException {
-		String name = currentMessage.substring(5);	
-		
+	public void addNewPeer(String name, String address)
+			throws UnknownHostException, IOException {	
 		Socket newSocket = new Socket(address, 55554);
 		PrintWriter peerOut =  new PrintWriter(newSocket.getOutputStream());
 		peerOut.println(myName);
 		peerOut.flush();
 		peers.put(name, newSocket);
+		System.out.println(name + " has been added to contacts");
 		
-		System.out.println(name + " has been added to contacts");							
+		BufferedReader reader = new BufferedReader(new InputStreamReader(newSocket.getInputStream()));
+		PeerThread peerListener = new PeerThread(reader, name, this);
+		Thread thread = new Thread(peerListener);
+		thread.start();
 	}
 
 	//Fuegt einen neuen Peer zur Kontaktliste hinzu

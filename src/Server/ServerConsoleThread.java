@@ -6,14 +6,15 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.Map;
 
-public class ServerThread extends Thread {
+public class ServerConsoleThread extends Thread {
 
     private VectorServer vectorServer;
 
-    public ServerThread(VectorServer vectorServer) {
+    public ServerConsoleThread(VectorServer vectorServer) {
         this.vectorServer = vectorServer;
     }
 
+    //Hoert auch Konsoleneingabe uns sendet an alle Clienten
     public void run(){
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         try {

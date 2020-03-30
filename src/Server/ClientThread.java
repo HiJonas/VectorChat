@@ -37,17 +37,17 @@ public class ClientThread implements Runnable {
 					//Falls Nachricht mit /setname beginnt soll der Name des Clienten gesetzt werden
 					String newName = currentMessage.substring(8);
 					if(server.getClients().contains(newName)) {
-						newMessage = "Name " + newName +" already exists";
+						newMessage = "ERROR#Name " + newName +" already exists";
 					}else {
 						client.setName(newName);	
-						newMessage = "Your Name has been set to " + client.getName();
+						newMessage = client.getName()+"#Your Name has been set to " + client.getName();
 					}
 					
 				}
 				else if(currentMessage.startsWith("/clients")) {
 					//Falls Nachricht mit /clients beginnt sollen alle Clientennamen zurueckgegeben werden
 					StringBuilder messageBuilder = new StringBuilder();
-					messageBuilder.append("Active Clients: ");
+					messageBuilder.append("CLIENTS#Active Clients:");
 					List<String> clients  = server.getClients();			
 					for(String currentClient: clients) {
 						messageBuilder.append(" " + currentClient);
@@ -56,13 +56,14 @@ public class ClientThread implements Runnable {
 					
 				}
 				else if(currentMessage.startsWith("/add")) {
+					System.out.println(currentMessage);
 					//Falls Nachricht mit /add beginnt soll Adresse des angegebenen Clienten zurueckgegeben werden
 					String userToAdd = currentMessage.substring(4).replace(" ", "");
 					Optional<Client> clientToAdd = server.getClientAddress(userToAdd);
 					if(clientToAdd.isPresent()) {
-						newMessage = clientToAdd.get().getAddress();
+						newMessage = "ADD#"+clientToAdd.get().getAddress()+" "+userToAdd;
 					}else {
-						newMessage = "No user with name "+ userToAdd;
+						newMessage = "ERROR#No user with name "+ userToAdd;
 					}
 					
 					
