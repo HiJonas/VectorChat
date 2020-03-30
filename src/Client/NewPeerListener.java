@@ -28,7 +28,7 @@ public class NewPeerListener implements Runnable {
 	@Override
 	public void run() {
 		try {
-			ServerSocket server = new ServerSocket(55554);		
+			ServerSocket server = new ServerSocket(vectorClient.PEERPORT);		
 			InetAddress adresse = InetAddress.getLocalHost();
 			while(true){
 				Socket socket = server.accept();

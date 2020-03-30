@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketImpl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class VectorServer {
 	
+	private static final int SERVERPORT = 25565;
 	private Map<Integer, Client> clients;
 
 	public VectorServer() {
@@ -21,7 +23,7 @@ public class VectorServer {
 
 	public void  startServerSocket(){
 		try {
-			ServerSocket server = new ServerSocket(5555);
+			ServerSocket server = new ServerSocket(SERVERPORT);
 			InetAddress adresse = InetAddress.getLocalHost();
 			System.out.println("Server started");
 			System.out.println("Running at:  " +  adresse.getHostAddress());
