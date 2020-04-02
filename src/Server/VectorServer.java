@@ -4,19 +4,23 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketImpl;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class VectorServer {
 	
 	private static final int SERVERPORT = 25565;
 	private Map<Integer, Client> clients;
+	private List<String> logs;
 
-	public VectorServer() {
+	public VectorServer() {	
 		System.out.println("Server starting...");
 		startServerSocket();
 	}
@@ -82,6 +86,27 @@ public class VectorServer {
 				.filter(c -> c.getName().equals(userToAdd))
 				.findFirst();
 		
+	}
+	
+	public void resetLogs() {
+		logs = Collections.synchronizedList(new ArrayList<String>());
+	}
+
+	
+	public void addLogs(String string) {
+		logs.add(string);	
+	}
+
+	public void evaluateLogs() {
+		System.out.println("Unsorted Logs:");
+		for(String log:logs) {
+			System.out.println(log);
+		}
+		Collections.sort(logs, new VectorComparator());	
+		System.out.println("Sorted Logs:");
+		for(String log:logs) {
+			System.out.println(log);
+		}
 	}
 
 }

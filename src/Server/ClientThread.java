@@ -73,10 +73,9 @@ public class ClientThread implements Runnable {
 					out.flush();
 				}else if(currentMessage.startsWith("LOG#")) {
 					String diaryString[] = currentMessage.split("#");
-					//0 is LOG and should be ignored
-					for(String currentString: diaryString) {
-						System.out.println(currentString);
-					}
+					for(int i=1; i<diaryString.length; i++) {
+						server.addLogs(diaryString[i]);
+					}					
 				}
 			}
 			

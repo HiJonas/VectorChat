@@ -1,9 +1,7 @@
-package Client;
+package Models;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import Models.Message;
 
 //Diese Klasse verwaltet empfangene und gesendete Nachrichten
 public class MessageDiary {

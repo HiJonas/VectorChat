@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
+import Models.MessageDiary;
 import Models.VectorClock;
 
 public class VectorClient {
