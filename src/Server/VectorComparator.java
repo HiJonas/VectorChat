@@ -10,8 +10,24 @@ public class VectorComparator implements Comparator<String> {
 	public int compare(String a, String b) {
 		String[] vectorA = getVector(a);
 		String[] vectorB = getVector(b);
-		if(vectorB.length > vectorA.length)return compareVectors(vectorB, vectorA);
+		if(vectorB.length > vectorA.length) {
+			vectorA = fillUpVector(vectorA, vectorB.length);
+		}
+		if(vectorA.length > vectorB.length) {
+			vectorB = fillUpVector(vectorB, vectorA.length);
+		}
 		return compareVectors(vectorA, vectorB);
+	}
+
+	private String[] fillUpVector(String[] vector, int length) {
+		String[] newVector = new String[length];
+		for(int i=0; i<length;i++) {
+			newVector[i]="0";
+		}
+		for(int i=0; i<vector.length;i++) {
+			newVector[i]=vector[i];
+		}
+		return null;
 	}
 
 	private int compareVectors(String[] vectorA, String[] vectorB) {
@@ -23,17 +39,11 @@ public class VectorComparator implements Comparator<String> {
 		boolean bLesserA=false;
 		
 		for(int i = 0; i<vectorA.length; i++) {
-			if(i >= vectorB.length) {
-				if(Integer.parseInt(vectorA[i]) > 0)aLesserEqualB=false;
-				if(Integer.parseInt(vectorA[i]) < 0)aLesserB=true;
-				if(0 > Integer.parseInt(vectorA[i]))bLesserEqualA=false;
-				if(0 < Integer.parseInt(vectorA[i]))bLesserA=true;
-			}else {
-				if(Integer.parseInt(vectorA[i]) > Integer.parseInt(vectorB[i]))aLesserEqualB=false;
-				if(Integer.parseInt(vectorA[i]) < Integer.parseInt(vectorB[i]))aLesserB=true;
-				if(Integer.parseInt(vectorB[i]) > Integer.parseInt(vectorA[i]))bLesserEqualA=false;
-				if(Integer.parseInt(vectorB[i]) < Integer.parseInt(vectorA[i]))bLesserA=true;
-			}		
+			if(Integer.parseInt(vectorA[i]) > Integer.parseInt(vectorB[i]))aLesserEqualB=false;
+			if(Integer.parseInt(vectorA[i]) < Integer.parseInt(vectorB[i]))aLesserB=true;
+			if(Integer.parseInt(vectorB[i]) > Integer.parseInt(vectorA[i]))bLesserEqualA=false;
+			if(Integer.parseInt(vectorB[i]) < Integer.parseInt(vectorA[i]))bLesserA=true;
+			
 		}
 		
 		if(aLesserEqualB && aLesserB) return -1;
