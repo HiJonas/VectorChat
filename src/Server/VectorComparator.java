@@ -27,7 +27,7 @@ public class VectorComparator implements Comparator<String> {
 		for(int i=0; i<vector.length;i++) {
 			newVector[i]=vector[i];
 		}
-		return null;
+		return newVector;
 	}
 
 	private int compareVectors(String[] vectorA, String[] vectorB) {
