@@ -13,7 +13,7 @@ import Models.VectorClock;
 
 public class VectorClient {
 	private static final int SERVERPORT = 25565;
-	static final int PEERPORT = 25566;
+	public int PEERPORT;
 	private int id;
 	PrintWriter serverOut;
 	Map<String, Socket> peers;
@@ -44,6 +44,7 @@ public class VectorClient {
 			String currentMessage;
 			String idString = reader.readLine();
 			id = Integer.parseInt(idString);
+			PEERPORT = 25566 + id;
 			
 			System.out.println("Connecting to Server...");
 			System.out.println("Your ID is "+ id);
@@ -148,9 +149,9 @@ public class VectorClient {
 	}
 
 	//Eroeffnet Socket zu Peer und schickt eigenen Namen
-	public void addNewPeer(String name, String address)
+	public void addNewPeer(String name, String address, int port)
 			throws UnknownHostException, IOException {	
-		Socket newSocket = new Socket(address, PEERPORT);
+		Socket newSocket = new Socket(address, port);
 		PrintWriter peerOut =  new PrintWriter(newSocket.getOutputStream());
 		peerOut.println(myName);
 		peerOut.flush();

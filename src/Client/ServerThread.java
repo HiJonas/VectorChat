@@ -33,9 +33,11 @@ public class ServerThread implements Runnable {
 					String currentMessageHeader = currentMessage.split("#")[0];
 					currentMessage = currentMessage.split("#")[1];
 					 if(currentMessageHeader.contains("ADD")) {
-						String address=currentMessage.split(" ")[0];
-						String name=currentMessage.substring(address.length()+1);
-						vectorClient.addNewPeer(name, address);					
+						String addressport=currentMessage.split(" ")[0];
+						String address = addressport.split(":")[0];
+						int port = Integer.parseInt(addressport.split(":")[1]);
+						String name=currentMessage.split(" ")[1];
+						vectorClient.addNewPeer(name, address, port);					
 					}else if(currentMessageHeader.contains("ERROR")) {
 						System.out.println("From Server: "+ currentMessage);
 					}else if(currentMessageHeader.contains("LOG")) {

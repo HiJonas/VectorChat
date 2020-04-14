@@ -64,7 +64,7 @@ public class ClientThread implements Runnable {
 					String userToAdd = currentMessage.substring(4).replace(" ", "");
 					Optional<Client> clientToAdd = server.getClientAddress(userToAdd);
 					if(clientToAdd.isPresent()) {
-						newMessage = "ADD#"+clientToAdd.get().getAddress()+" "+userToAdd;
+						newMessage = "ADD#"+clientToAdd.get().getAddress()+":"+clientToAdd.get().getPeerPort()+" "+userToAdd;
 					}else {
 						newMessage = "ERROR#No user with name "+ userToAdd;
 					}			

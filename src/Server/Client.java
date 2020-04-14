@@ -34,6 +34,10 @@ public class Client {
 		return socket.getInetAddress().getHostAddress();
 	}
 
+	public int getPeerPort() {
+		return 25566 + id;		
+	}
+	
 	public Socket getSocket() {
 		return socket;
 	}
